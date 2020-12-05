@@ -1,0 +1,40 @@
+version: '3.5'
+services:
+  PrecipitationForecastRadar_cpu:
+    container_name: PrecipitationForecastRadar_cpu
+    build: .
+    image: bap_pymc3:latest
+#    runtime: nvidia
+#    environment:
+#      - NVIDIA_VISIBLE_DEVICES=all
+#      - ./web.env
+#    command: nvidia-smi
+    tty: true
+    command: /bin/bash
+    volumes:
+      - .:/src
+#    env_file:
+#      - ./web.env
+    ports:
+      - "8010:8010"
+
+  PrecipitationForecastRadar_gpu:
+    container_name: PrecipitationForecastRadar_gpu
+    build:
+      context: .
+      dockerfile: gpu.Dockerfile
+    image: bap_gpu:latest
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    tty: true
+    ipc: 'host'
+    stdin_open: true
+    command: /bin/bash
+    volumes:
+      - .:/src
+    #    env_file:
+    #      - ./web.env
+    ports:
+      - "8011:8011"

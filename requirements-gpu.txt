@@ -1,0 +1,49 @@
+numpy
+requests
+pandas
+tqdm
+pytz
+colorlover
+ipython
+jupyter
+jupyterlab
+markdown
+freeze
+
+matplotlib
+seaborn
+plotly
+
+scikit-learn
+# pymc3
+scipy
+graphviz
+# arviz
+watermark
+# torch
+# torchvision
+six>=1.12.0
+setuptools>=41.0.0
+tensorflow
+tensorboardx
+Pillow
+scikit-learn
+torchsummary
+
+h5py
+progressbar2
+tabulate
+vulture
+skorch
+# optuna
+ax-platform
+botorch
+zope.dottedname
+pytorch-ignite
+pytorch-lightning
+
+captum
+tifffile
+
+# pyro-ppl
+# numpyro
