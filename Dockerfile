@@ -8,6 +8,8 @@ RUN apt-get -y install binutils vim git python3-pip wget unzip
 #RUN apt-get -y install libproj-dev gdal-bin libgdal-dev
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 RUN ln -s /usr/bin/pip3 /usr/bin/pip
+RUN ln -s /usr/bin/python3.6 /usr/local/bin/python3
+RUN ln -s /usr/bin/python3.6 /usr/local/bin/python
 RUN pip install -U pip && hash -r pip
 
 # For rasterio
