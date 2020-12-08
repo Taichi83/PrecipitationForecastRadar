@@ -50,5 +50,7 @@ shapely
 fiona
 pycrs
 
+boto3
+
 # pyro-ppl
 # numpyro
