@@ -1,9 +1,9 @@
 version: '3.5'
 services:
   PrecipitationForecastRadar_cpu:
-    container_name: PrecipitationForecastRadar_cpu
+    container_name: PrecipitationForecastRadar_dev-gis_cpu
     build: .
-    image: bap_pymc3:latest
+    image: preicipitation_forecast_radar-cpu:dev-gis
 #    runtime: nvidia
 #    environment:
 #      - NVIDIA_VISIBLE_DEVICES=all
@@ -14,16 +14,16 @@ services:
     volumes:
       - .:/src
 #    env_file:
-      - ./web.env
+#      - ./web.env
     ports:
       - "8010:8010"
 
 #  PrecipitationForecastRadar_gpu:
-#    container_name: PrecipitationForecastRadar_gpu
+#    container_name: PrecipitationForecastRadar_dev-gis_gpu
 #    build:
 #      context: .
 #      dockerfile: gpu.Dockerfile
-#    image: bap_gpu:latest
+#    image: preicipitation_forecast_radar-gpu:dev-gis
 #    runtime: nvidia
 #    environment:
 #      - NVIDIA_VISIBLE_DEVICES=all

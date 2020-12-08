@@ -7,7 +7,7 @@ import requests
 import boto3
 import botocore
 
-S3_BUCKET_NAME = os.getenv('AWS_S3_BUCKET_NAME')
+S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME')
 
 
 def argwrapper(args):

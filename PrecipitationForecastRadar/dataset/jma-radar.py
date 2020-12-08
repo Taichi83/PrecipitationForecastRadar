@@ -301,6 +301,11 @@ class DatasetMaker(object):
 
         files_path = self._get_candidate_files_path(datetime_start=datetime_start, datetime_end=datetime_end)
         print(files_path)
+
+        dir_out = os.path.join(self.dir_parent_dst_local, self.subdir_dst)
+        if not os.path.exists(dir_out):
+            os.makedirs(dir_out)
+
         if processes == 1:
             list_dict_path_info = []
             for file_path in tqdm(files_path, total=len(files_path)):
@@ -350,15 +355,15 @@ if __name__ == '__main__':
     lat = 26.3
     size = (256, 256)
 
-    datetime_start = datetime.datetime(year=2015, month=8, day=1, hour=0, minute=0, tzinfo=pytz.utc)
-    datetime_end = datetime.datetime(year=2015, month=8, day=1, hour=2, minute=59, tzinfo=pytz.utc)
+    datetime_start = datetime.datetime(year=2015, month=1, day=1, hour=0, minute=0, tzinfo=pytz.utc)
+    datetime_end = datetime.datetime(year=2015, month=3, day=31, hour=23, minute=59, tzinfo=pytz.utc)
     dir_parent_dst_local = 'dataset'
     dir_parent_dst_s3 = 'check_data/RA_dataset'
     src_s3 = True
     overwrite = True
     s3_upload = True
     remove_local_file = False
-    processes = 6
+    processes = 10
 
     dataset_maker = DatasetMaker(dir_parent_src=dir_parent_src, dir_parent_dst_local=dir_parent_dst_local,
                                  dir_parent_dst_s3=dir_parent_dst_s3, subdir_dst='temp', src_is_s3=src_s3)
