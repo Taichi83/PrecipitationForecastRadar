@@ -8,7 +8,7 @@ import torchvision.transforms as transforms
 import torchvision.transforms.functional as TF
 import matplotlib.pyplot as plt
 
-from PrecipitationForecastRadar.dataset.utils import SegDatasetBase
+from PrecipitationForecastRadar.dataset.utils_torch import SegDatasetBase
 
 
 def get_pascal_labels():
