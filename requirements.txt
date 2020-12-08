@@ -45,5 +45,10 @@ pytorch-lightning
 captum
 tifffile
 
+geopandas
+shapely
+fiona
+pycrs
+
 # pyro-ppl
 # numpyro

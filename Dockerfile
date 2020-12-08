@@ -1,6 +1,6 @@
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 
-#ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND noniteractive
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get -y install binutils vim git python3-pip wget unzip
@@ -9,6 +9,13 @@ RUN apt-get -y install binutils vim git python3-pip wget unzip
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 RUN ln -s /usr/bin/pip3 /usr/bin/pip
 RUN pip install -U pip && hash -r pip
+
+# For rasterio
+RUN apt-get install software-properties-common -y
+RUN add-apt-repository ppa:ubuntugis/ppa
+RUN apt-get update -y
+RUN apt-get -y install python-numpy gdal-bin libgdal-dev
+RUN pip install rasterio
 
 USER root
 RUN mkdir /src
@@ -30,26 +37,26 @@ RUN pip install -r /src/requirements.txt
 RUN chmod -R a+w .
 
 RUN jupyter notebook --generate-config
-
-WORKDIR /app
-# Install libraries for installing wgrib2
-RUN apt-get update && apt-get install -y wget \
-    build-essential \
-    gfortran \
-    zlib1g-dev
-
-# Setting for libraries
-ENV CC gcc
-ENV FC gfortran
-
-# Download wgrib2
-RUN cd ~ \
-    && wget ftp://ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz \
-    && tar xvzf wgrib2.tgz
-
-# Install wgrib2
-RUN cd ~/grib2/ \
-    && make \
-    && cp wgrib2/wgrib2 /usr/local/bin/wgrib2
+ENV CURL_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
+#WORKDIR /app
+## Install libraries for installing wgrib2
+#RUN apt-get update && apt-get install -y wget \
+#    build-essential \
+#    gfortran \
+#    zlib1g-dev
+#
+## Setting for libraries
+#ENV CC gcc
+#ENV FC gfortran
+#
+## Download wgrib2
+#RUN cd ~ \
+#    && wget ftp://ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz \
+#    && tar xvzf wgrib2.tgz
+#
+## Install wgrib2
+#RUN cd ~/grib2/ \
+#    && make \
+#    && cp wgrib2/wgrib2 /usr/local/bin/wgrib2
 
 WORKDIR /src

@@ -1,4 +1,6 @@
-FROM nvidia/cuda:11.1-devel-ubuntu20.04
+#FROM nvidia/cuda:11.1-devel-ubuntu20.04
+FROM nvidia/cuda:11.1-devel-ubuntu18.04
+
 ENV LANG C.UTF-8
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
@@ -94,7 +96,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     apt-get autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* ~/*
 
-#ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED 1
 #ENV DEBIAN_FRONTEND noniteractive
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get -y install binutils vim git python3-pip wget unzip
@@ -103,6 +105,13 @@ RUN apt-get -y install binutils vim git python3-pip wget unzip
 RUN ln -sf /usr/bin/python3 /usr/bin/python
 RUN ln -s /usr/bin/pip3 /usr/bin/pip
 RUN pip install -U pip && hash -r pip
+
+# For rasterio
+RUN apt-get install software-properties-common -y
+RUN add-apt-repository ppa:ubuntugis/ppa
+RUN apt-get update -y
+RUN apt-get -y install python-numpy gdal-bin libgdal-dev
+RUN pip install rasterio
 
 USER root
 RUN mkdir /src
@@ -140,26 +149,26 @@ WORKDIR /src
 RUN chmod -R a+w .
 
 RUN jupyter notebook --generate-config
-
-WORKDIR /app
-# Install libraries for installing wgrib2
-RUN apt-get update && apt-get install -y wget \
-    build-essential \
-    gfortran \
-    zlib1g-dev
-
-# Setting for libraries
-ENV CC gcc
-ENV FC gfortran
-
-# Download wgrib2
-RUN cd ~ \
-    && wget ftp://ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz \
-    && tar xvzf wgrib2.tgz
-
-# Install wgrib2
-RUN cd ~/grib2/ \
-    && make \
-    && cp wgrib2/wgrib2 /usr/local/bin/wgrib2
+ENV CURL_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
+#WORKDIR /app
+## Install libraries for installing wgrib2
+#RUN apt-get update && apt-get install -y wget \
+#    build-essential \
+#    gfortran \
+#    zlib1g-dev
+#
+## Setting for libraries
+#ENV CC gcc
+#ENV FC gfortran
+#
+## Download wgrib2
+#RUN cd ~ \
+#    && wget ftp://ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz \
+#    && tar xvzf wgrib2.tgz
+#
+## Install wgrib2
+#RUN cd ~/grib2/ \
+#    && make \
+#    && cp wgrib2/wgrib2 /usr/local/bin/wgrib2
 
 WORKDIR /src
