@@ -1,7 +1,7 @@
 version: '3.5'
 services:
   PrecipitationForecastRadar_cpu:
-    container_name: PrecipitationForecastRadar_dev-gis_cpu
+    container_name: PrecipitationForecastRadar_jma-radar_cpu
     build: .
     image: preicipitation_forecast_radar-cpu:dev-gis
 #    runtime: nvidia
