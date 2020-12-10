@@ -3,7 +3,7 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
-from PrecipitationForecastRadar.utils import dataset_precip
+from PrecipitationForecastRadar.dataset import dataset_precip
 import argparse
 import numpy as np
 
