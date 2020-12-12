@@ -2,38 +2,38 @@
 #FROM nvidia/cuda:11.1-devel-ubuntu18.04
 FROM rocm/pytorch:rocm3.10_ubuntu18.04_py3.6_pytorch
 
-ENV LANG C.UTF-8
-RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
-    PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
-    GIT_CLONE="git clone --depth 10" && \
-
-    rm -rf /var/lib/apt/lists/* \
-           /etc/apt/sources.list.d/cuda.list \
-           /etc/apt/sources.list.d/nvidia-ml.list && \
-
-    apt-get update && \
-
-# ==================================================================
-# tools
-# ------------------------------------------------------------------
-
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        build-essential \
-        apt-utils \
-        ca-certificates \
-        wget \
-        git \
-        vim \
-        libssl-dev \
-        curl \
-        unzip \
-        unrar \
-        && \
-
-    $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
-    cd ~/cmake && \
-    ./bootstrap && \
-    make -j"$(nproc)" install && \
+#ENV LANG C.UTF-8
+#RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
+#    PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
+#    GIT_CLONE="git clone --depth 10" && \
+#
+#    rm -rf /var/lib/apt/lists/* \
+##           /etc/apt/sources.list.d/cuda.list \
+##           /etc/apt/sources.list.d/nvidia-ml.list && \
+#
+#    apt-get update && \
+#
+## ==================================================================
+## tools
+## ------------------------------------------------------------------
+#
+#    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+#        build-essential \
+#        apt-utils \
+#        ca-certificates \
+#        wget \
+#        git \
+#        vim \
+#        libssl-dev \
+#        curl \
+#        unzip \
+#        unrar \
+#        && \
+#
+#    $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
+#    cd ~/cmake && \
+#    ./bootstrap && \
+#    make -j"$(nproc)" install && \
 
 # ==================================================================
 # python
@@ -92,10 +92,10 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # config & cleanup
 # ------------------------------------------------------------------
 
-    ldconfig && \
-    apt-get clean && \
-    apt-get autoremove && \
-    rm -rf /var/lib/apt/lists/* /tmp/* ~/*
+#    ldconfig && \
+#    apt-get clean && \
+#    apt-get autoremove && \
+#    rm -rf /var/lib/apt/lists/* /tmp/* ~/*
 
 ENV PYTHONUNBUFFERED 1
 #ENV DEBIAN_FRONTEND noniteractive
@@ -109,7 +109,7 @@ RUN pip install -U pip && hash -r pip
 
 # For rasterio
 RUN apt-get install software-properties-common -y
-RUN add-apt-repository ppa:ubuntugis/ppa
+#RUN add-apt-repository ppa:ubuntugis/ppa
 RUN apt-get update -y
 RUN apt-get -y install python-numpy gdal-bin libgdal-dev
 RUN pip install rasterio
