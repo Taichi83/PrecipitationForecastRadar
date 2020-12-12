@@ -1,5 +1,6 @@
 #FROM nvidia/cuda:11.1-devel-ubuntu20.04
-FROM nvidia/cuda:11.1-devel-ubuntu18.04
+#FROM nvidia/cuda:11.1-devel-ubuntu18.04
+FROM rocm/pytorch:rocm3.10_ubuntu18.04_py3.6_pytorch
 
 ENV LANG C.UTF-8
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
@@ -38,54 +39,54 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # python
 # ------------------------------------------------------------------
 
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        software-properties-common \
-        && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get update && \
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        python3.6 \
-        python3.6-dev \
-        python3-distutils-extra \
-        && \
-    wget -O ~/get-pip.py \
-        https://bootstrap.pypa.io/get-pip.py && \
-    python3.6 ~/get-pip.py && \
-    ln -s /usr/bin/python3.6 /usr/local/bin/python3 && \
-    ln -s /usr/bin/python3.6 /usr/local/bin/python && \
-    $PIP_INSTALL \
-        setuptools \
-        && \
-    $PIP_INSTALL \
-        numpy \
-        scipy \
-        pandas \
-        cloudpickle \
-        scikit-image>=0.14.2 \
-        scikit-learn \
-        matplotlib \
-        Cython \
-        tqdm \
-        && \
+#    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+#        software-properties-common \
+#        && \
+#    add-apt-repository ppa:deadsnakes/ppa && \
+#    apt-get update && \
+#    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+#        python3.6 \
+#        python3.6-dev \
+#        python3-distutils-extra \
+#        && \
+#    wget -O ~/get-pip.py \
+#        https://bootstrap.pypa.io/get-pip.py && \
+#    python3.6 ~/get-pip.py && \
+#    ln -s /usr/bin/python3.6 /usr/local/bin/python3 && \
+#    ln -s /usr/bin/python3.6 /usr/local/bin/python && \
+#    $PIP_INSTALL \
+#        setuptools \
+#        && \
+#    $PIP_INSTALL \
+#        numpy \
+#        scipy \
+#        pandas \
+#        cloudpickle \
+#        scikit-image>=0.14.2 \
+#        scikit-learn \
+#        matplotlib \
+#        Cython \
+#        tqdm \
+#        && \
 
 # ==================================================================
 # pytorch
 # ------------------------------------------------------------------
-
-    $PIP_INSTALL \
-        future \
-        numpy \
-        protobuf \
-        enum34 \
-        pyyaml \
-        typing \
-        && \
-    $PIP_INSTALL \
-#        --pre torch torchvision -f \
-#        https://download.pytorch.org/whl/nightly/cu101/torch_nightly.html \
-        --pre torch torchvision torchaudio -f \
-        https://download.pytorch.org/whl/nightly/cu110/torch_nightly.html \
-        && \
+#
+#    $PIP_INSTALL \
+#        future \
+#        numpy \
+#        protobuf \
+#        enum34 \
+#        pyyaml \
+#        typing \
+#        && \
+#    $PIP_INSTALL \
+##        --pre torch torchvision -f \
+##        https://download.pytorch.org/whl/nightly/cu101/torch_nightly.html \
+#        --pre torch torchvision torchaudio -f \
+#        https://download.pytorch.org/whl/nightly/cu110/torch_nightly.html \
+#        && \
 
 # ==================================================================
 # config & cleanup
