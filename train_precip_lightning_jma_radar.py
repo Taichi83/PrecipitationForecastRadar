@@ -26,7 +26,7 @@ def train_regression():
 
     es_patience = 30
 
-    epochs = 5
+    epochs = 1
     gpus = 1
 
     dm = PrecipRegressionDataModule(
@@ -35,7 +35,9 @@ def train_regression():
         num_input_images=num_input_images,
         num_output_images=num_output_images,
         datetime_train_start=datetime_train_start,
-        datetime_train_end=datetime_train_end
+        datetime_train_end=datetime_train_end,
+        datetime_test_start=datetime_train_start,
+        datetime_test_end=datetime_train_end
     )
     net = UNet(
         n_channels=n_channels,
@@ -71,11 +73,12 @@ def train_regression():
                          max_epochs=epochs,
                          weights_save_path=default_save_path,
                          logger=tb_logger,
-                         # callbacks=[lr_logger, earlystopping_callback, checkpoint_callback],
-                         callbacks=[lr_logger, earlystopping_callback],
+                         callbacks=[lr_logger, earlystopping_callback, checkpoint_callback],
+                         # callbacks=[lr_logger, earlystopping_callback],
                          val_check_interval=0.25,
                          overfit_batches=0.1)
-    trainer.fit(net, dm)
+    trainer.fit(net, datamodule=dm)
+    print(trainer.test())
 
     return
 
