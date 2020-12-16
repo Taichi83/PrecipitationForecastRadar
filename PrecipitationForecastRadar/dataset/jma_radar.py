@@ -11,7 +11,8 @@ import rasterio
 from rasterio.windows import Window, transform
 import pandas as pd
 
-from PrecipitationForecastRadar.dataset.utils import get_all_file_path_s3, copy_to_s3, check_file_existence_local, argwrapper, \
+from PrecipitationForecastRadar.dataset.utils import get_all_file_path_s3, copy_to_s3, check_file_existence_local, \
+    argwrapper, \
     imap_unordered_bar
 
 
@@ -47,7 +48,7 @@ def get_array(path_img: str, lon: float, lat: float, size: Tuple[int, int] = (25
 
 
 def get_cropped_gtiff(path_img: str, path_out: str, lon: float, lat: float, array_size: Tuple[int, int] = (256, 256),
-                      pos: str = 'center', band: Optional[int] = 1) -> None:
+                      pos: str = 'center', band: Optional[int] = 1) -> Tuple[float, float]:
     """
 
     Args:
@@ -91,7 +92,7 @@ def get_cropped_gtiff(path_img: str, path_out: str, lon: float, lat: float, arra
         with rasterio.open(path_out, 'w', **out_profile) as dst:
             dst.write(clip)
 
-    return
+    return np.sum(clip == src.nodata) / clip.size, np.sum(clip > 0) / clip.size
 
 
 def get_datetime(path_img: str) -> datetime.datetime:
@@ -216,9 +217,14 @@ class DatasetMaker(object):
         path_out = os.path.join(self.dir_parent_dst_local, self.subdir_dst, filename)
 
         if overwrite or not check_file_existence_local(path_out):
-            get_cropped_gtiff(path_img=path_img,
-                              path_out=path_out,
-                              lon=lon, lat=lat, array_size=array_size, pos=pos, band=band)
+            rate_nodata, rate_rain = get_cropped_gtiff(path_img=path_img,
+                                                       path_out=path_out,
+                                                       lon=lon, lat=lat, array_size=array_size, pos=pos, band=band)
+        else:
+            src = rasterio.open(path_out)
+            array = src.read(1)
+            rate_nodata = np.sum(array == src.nodata) / array.size
+            rate_rain = np.sum(array > 0) / array.size
 
         if s3_upload:
             path_dst_s3 = os.path.join(self.dir_parent_dst_s3, self.subdir_dst, filename)
@@ -234,7 +240,9 @@ class DatasetMaker(object):
             'url_s3_origin': path_img,
             self.key_s3: url_out,
             'datetime': get_datetime(path_img),
-            'file_name': filename
+            'file_name': filename,
+            'rate_nodata': rate_nodata,
+            'rate_rain': rate_rain
         }
         return dict_path_info
 
