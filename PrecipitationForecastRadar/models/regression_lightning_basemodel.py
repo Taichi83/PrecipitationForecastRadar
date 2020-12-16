@@ -24,7 +24,9 @@ class UNet_base(pl.LightningModule):
 
     def loss_func(self, y_pred, y_true):
         # reduction="mean" is average of every pixel, but I want average of image
-        return nn.functional.mse_loss(y_pred, y_true, reduction="sum") / y_true.size(0)
+        # return nn.functional.mse_loss(y_pred, y_true, reduction="sum") / (y_true.size(-1) * y_true.size(-2))
+
+        return nn.functional.mse_loss(y_pred, y_true, reduction="mean") / y_true.size(0)
 
     def training_step(self, batch, batch_idx):
         x, y = batch
