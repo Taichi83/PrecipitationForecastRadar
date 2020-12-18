@@ -9,16 +9,17 @@ if __name__=='__main__':
 
     datetime_start = datetime.datetime(year=2015, month=1, day=1, hour=0, minute=0, tzinfo=pytz.utc)
     datetime_end = datetime.datetime(year=2016, month=12, day=31, hour=23, minute=59, tzinfo=pytz.utc)
-    dir_parent_dst_local = 'dataset/2015-2016'
-    dir_parent_dst_s3 = 'check_data/RA_dataset/2015-2016'
+    dir_parent_dst_local = 'dataset/RA'
+    dir_parent_dst_s3 = 'dataset/RA'
+    subdir_dst = '2015-2016_okinawa'
     src_s3 = True
     overwrite = True
     s3_upload = True
     remove_local_file = False
-    processes = 14
+    processes = 15
 
     dataset_maker = DatasetMaker(dir_parent_src=dir_parent_src, dir_parent_dst_local=dir_parent_dst_local,
-                                 dir_parent_dst_s3=dir_parent_dst_s3, subdir_dst='temp', src_is_s3=src_s3)
+                                 dir_parent_dst_s3=dir_parent_dst_s3, subdir_dst=subdir_dst, src_is_s3=src_s3)
     df_file_list, dict_parameters = dataset_maker.prepare_dataset(datetime_start=datetime_start,
                                                                   datetime_end=datetime_end,
                                                                   lon=lon, lat=lat,

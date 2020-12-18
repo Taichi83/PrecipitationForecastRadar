@@ -9,20 +9,19 @@ import rasterio
 from torch.utils.data import Dataset
 
 
-# todo: nodataの補正はtransformに入れる。
 class PrecipitationJMADataset(Dataset):
     def __init__(self,
                  path_img_list: str,
                  num_input_images: int,
                  num_output_images: int,
-                 datetime_train_start: Optional[datetime.datetime]=None,
-                 datetime_train_end: Optional[datetime.datetime]=None,
-                 datetime_test_start: Optional[datetime.datetime]=None,
-                 datetime_test_end: Optional[datetime.datetime]=None,
+                 datetime_train_start: Optional[datetime.datetime] = None,
+                 datetime_train_end: Optional[datetime.datetime] = None,
+                 datetime_test_start: Optional[datetime.datetime] = None,
+                 datetime_test_end: Optional[datetime.datetime] = None,
                  train: bool = True,
                  transform=None,
-                 precipitation_threshold_train: Optional[float]=None,
-                 precipitation_threshold_test: Optional[float]=None,
+                 precipitation_threshold_train: Optional[float] = None,
+                 precipitation_threshold_test: Optional[float] = None,
                  ):
 
         # super(PrecipitationMap, self).__init__()
@@ -36,9 +35,12 @@ class PrecipitationJMADataset(Dataset):
         self.datetime_test_end = datetime_test_end
         self.train = train
         self.transform = transform
+        self.precipitation_threshold_train = precipitation_threshold_train
+        self.precipitation_threshold_test = precipitation_threshold_test
 
         col_datetime = 'datetime'
         col_filename = 'file_name'
+        col_rate_rain = 'rate_rain'
 
         # get file list in dataframe
         df = pd.read_csv(self.path_img_list)
@@ -66,19 +68,43 @@ class PrecipitationJMADataset(Dataset):
 
         dir_target = os.path.dirname(self.path_img_list)
 
+        # train
         self.list_img_train = [os.path.join(dir_target, filename) for filename in df_train[col_filename].tolist()]
         self.list_datetime_train = df_train[col_datetime].tolist()
+        self.list_rate_rain_train = df_train[col_rate_rain].tolist()
         self.size_dataset_train = len(self.list_img_train) - (num_input_images + num_output_images)
 
+        self.list_path_img_train = []
+        for index in range(self.size_dataset_train):
+            list_path_img_temp = self.list_img_train[index:index + self.sequence_length]
+            if self.precipitation_threshold_train is not None:
+                list_rate_rain_temp = self.list_rate_rain_train[index:index + self.sequence_length]
+                if sum([rate_rain_temp < self.precipitation_threshold_train for rate_rain_temp in list_rate_rain_temp]) > 0:
+                    continue
+                self.list_path_img_train.append(list_rate_rain_temp)
+
+        # test
         self.list_img_test = [os.path.join(dir_target, filename) for filename in df_test[col_filename].tolist()]
         self.list_datetime_test = df_test[col_datetime].tolist()
+        self.list_rate_rain_test = df_test[col_rate_rain].tolist()
         self.size_dataset_test = len(self.list_img_test) - (num_input_images + num_output_images)
+
+        self.list_path_img_test = []
+        for index in range(self.size_dataset_test):
+            list_path_img_temp = self.list_img_test[index:index + self.sequence_length]
+            if self.precipitation_threshold_test is not None:
+                list_rate_rain_temp = self.list_rate_rain_test[index:index + self.sequence_length]
+                if sum([rate_rain_temp < self.precipitation_threshold_test for rate_rain_temp in list_rate_rain_temp]) > 0:
+                    continue
+                self.list_path_img_test.append(list_rate_rain_temp)
 
     def __getitem__(self, index):
         if self.train:
-            list_path_img = self.list_img_train[index:index + self.sequence_length]
+            # list_path_img = self.list_img_train[index:index + self.sequence_length]
+            list_path_img = self.list_path_img_train[index]
         else:
-            list_path_img = self.list_img_test[index:index + self.sequence_length]
+            # list_path_img = self.list_img_test[index:index + self.sequence_length]
+            list_path_img = self.list_path_img_test[index]
 
         list_array = []
         for path_img in list_path_img:
@@ -97,9 +123,11 @@ class PrecipitationJMADataset(Dataset):
 
     def __len__(self):
         if self.train:
-            return self.size_dataset_train
+            # return self.size_dataset_train
+            return len(self.list_path_img_train)
         else:
-            return self.size_dataset_test
+            # return self.size_dataset_test
+            return len(self.list_path_img_test)
 
 
 class PrecipitationJMADataset_org(Dataset):
