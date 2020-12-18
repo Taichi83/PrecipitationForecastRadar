@@ -81,7 +81,7 @@ class PrecipitationJMADataset(Dataset):
                 list_rate_rain_temp = self.list_rate_rain_train[index:index + self.sequence_length]
                 if sum([rate_rain_temp < self.precipitation_threshold_train for rate_rain_temp in list_rate_rain_temp]) > 0:
                     continue
-                self.list_path_img_train.append(list_rate_rain_temp)
+            self.list_path_img_train.append(list_path_img_temp)
 
         # test
         self.list_img_test = [os.path.join(dir_target, filename) for filename in df_test[col_filename].tolist()]
@@ -96,7 +96,7 @@ class PrecipitationJMADataset(Dataset):
                 list_rate_rain_temp = self.list_rate_rain_test[index:index + self.sequence_length]
                 if sum([rate_rain_temp < self.precipitation_threshold_test for rate_rain_temp in list_rate_rain_temp]) > 0:
                     continue
-                self.list_path_img_test.append(list_rate_rain_temp)
+            self.list_path_img_test.append(list_path_img_temp)
 
     def __getitem__(self, index):
         if self.train:

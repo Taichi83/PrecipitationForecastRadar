@@ -12,7 +12,11 @@ from PrecipitationForecastRadar.models.regression_lightning_unet_precip import U
 def train_regression():
     batch_size = 8
 
-    path_image_list = 'dataset/RA/2015-2016_okinawa/file_list.csv'
+    dir_parent_local = 'dataset/RA'
+    subdir_dst = '2015-2016_okinawa'
+    list_name = 'file_list.csv'
+
+    path_image_list = os.path.join(dir_parent_local, subdir_dst, list_name)
     num_input_images = 12
     num_output_images = 1
     datetime_train_start = datetime.datetime(year=2015, month=1, day=1, tzinfo=pytz.utc)
@@ -63,7 +67,8 @@ def train_regression():
 
     dm.setup()
     # return
-    default_save_path = "output/lightning/2015-2016_okinawa/Unet"
+    default_save_path = os.path.join("output/lightning", subdir_dst)
+        # "output/lightning/2015-2016_okinawa/Unet"
     if not os.path.exists(default_save_path):
         os.makedirs(default_save_path)
     checkpoint_callback = ModelCheckpoint(
@@ -72,7 +77,7 @@ def train_regression():
         verbose=False,
         monitor='val_loss',
         mode='min',
-        prefix=net.__class__.__name__ + "_rain_threshhold_20_"
+        prefix=net.__class__.__name__ + "_rain_threshhold_{}_".format(precipitation_threshold_train)
     )
     lr_logger = LearningRateMonitor()
     tb_logger = loggers.TensorBoardLogger(save_dir=default_save_path, name=net.__class__.__name__)

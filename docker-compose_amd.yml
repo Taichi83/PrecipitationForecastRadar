@@ -22,7 +22,7 @@ services:
     container_name: PrecipitationForecastRadar_jma-radar_gpu
     build:
       context: .
-      dockerfile: gpu.Dockerfile
+      dockerfile: amd.Dockerfile
     image: preicipitation_forecast_radar-gpu:dev-gis
 #    runtime: nvidia
     devices:
