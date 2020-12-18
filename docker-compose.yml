@@ -13,8 +13,8 @@ services:
     command: /bin/bash
     volumes:
       - .:/src
-#    env_file:
-#      - ./web.env
+    env_file:
+      - ./web.env
     ports:
       - "8010:8010"
 
@@ -34,7 +34,7 @@ services:
     command: /bin/bash
     volumes:
       - .:/src
-    #    env_file:
-    #      - ./web.env
+        env_file:
+          - ./web.env
     ports:
       - "8011:8011"
