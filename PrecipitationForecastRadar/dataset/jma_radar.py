@@ -364,17 +364,17 @@ if __name__ == '__main__':
     size = (256, 256)
 
     datetime_start = datetime.datetime(year=2015, month=1, day=1, hour=0, minute=0, tzinfo=pytz.utc)
-    datetime_end = datetime.datetime(year=2015, month=3, day=31, hour=23, minute=59, tzinfo=pytz.utc)
+    datetime_end = datetime.datetime(year=2015, month=1, day=1, hour=0, minute=59, tzinfo=pytz.utc)
     dir_parent_dst_local = 'dataset'
     dir_parent_dst_s3 = 'check_data/RA_dataset'
-    src_s3 = True
+    src_is_s3 = True
     overwrite = True
-    s3_upload = True
+    s3_upload = False
     remove_local_file = False
-    processes = 10
+    processes = 1
 
     dataset_maker = DatasetMaker(dir_parent_src=dir_parent_src, dir_parent_dst_local=dir_parent_dst_local,
-                                 dir_parent_dst_s3=dir_parent_dst_s3, subdir_dst='temp', src_is_s3=src_s3)
+                                 dir_parent_dst_s3=dir_parent_dst_s3, subdir_dst='temp', src_is_s3=src_is_s3)
     df_file_list, dict_parameters = dataset_maker.prepare_dataset(datetime_start=datetime_start,
                                                                   datetime_end=datetime_end,
                                                                   lon=lon, lat=lat,

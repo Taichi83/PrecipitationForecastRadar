@@ -1,24 +1,29 @@
-import datetime, pytz
+import datetime
 import os
+import pytz
+from typing import Optional
 
-import torch
-from torch.utils.data import Dataset
 import numpy as np
 import pandas as pd
 import rasterio
+from torch.utils.data import Dataset
 
 
+# todo: nodataの補正はtransformに入れる。
 class PrecipitationJMADataset(Dataset):
     def __init__(self,
                  path_img_list: str,
                  num_input_images: int,
                  num_output_images: int,
-                 datetime_train_start=None,
-                 datetime_train_end=None,
-                 datetime_test_start=None,
-                 datetime_test_end=None,
+                 datetime_train_start: Optional[datetime.datetime]=None,
+                 datetime_train_end: Optional[datetime.datetime]=None,
+                 datetime_test_start: Optional[datetime.datetime]=None,
+                 datetime_test_end: Optional[datetime.datetime]=None,
                  train: bool = True,
-                 transform=None):
+                 transform=None,
+                 precipitation_threshold_train: Optional[float]=None,
+                 precipitation_threshold_test: Optional[float]=None,
+                 ):
 
         # super(PrecipitationMap, self).__init__()
         self.path_img_list = path_img_list
@@ -155,18 +160,23 @@ class PrecipitationJMADataset_org(Dataset):
 
 
 if __name__ == '__main__':
-    path_image_list = 'dataset/jma_okinawa_2015/file_list.csv'
+    path_image_list = 'dataset/jma_okinawa_2015-2016/file_list.csv'
     num_input_images = 6
     num_output_images = 1
     datetime_train_start = datetime.datetime(year=2015, month=1, day=1, tzinfo=pytz.utc)
-    datetime_train_end = datetime.datetime(year=2015, month=1, day=31, tzinfo=pytz.utc)
+    datetime_train_end = datetime.datetime(year=2015, month=3, day=31, tzinfo=pytz.utc)
+    datetime_test_start = datetime.datetime(year=2016, month=1, day=1, tzinfo=pytz.utc)
+    datetime_test_end = datetime.datetime(year=2016, month=3, day=31, tzinfo=pytz.utc)
 
     precipitation_jma_dataset = PrecipitationJMADataset(
         path_img_list=path_image_list,
         num_input_images=num_input_images,
         num_output_images=num_output_images,
         datetime_train_start=datetime_train_start,
-        datetime_train_end=datetime_train_end
+        datetime_train_end=datetime_train_end,
+        datetime_test_start=datetime_test_start,
+        datetime_test_end=datetime_test_end,
+        precipitation_threshold_train=0.2,
     )
     print(precipitation_jma_dataset[0][0].shape)
     print(precipitation_jma_dataset[1][0].shape)
