@@ -6,7 +6,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor, Ea
 from pytorch_lightning import loggers
 
 from PrecipitationForecastRadar.dataloader.regression_lightning_datamodule import PrecipRegressionDataModule
-from PrecipitationForecastRadar.models.regression_lightning_unet_precip import UNet
+from PrecipitationForecastRadar.models.regression_lightning_unet_precip import UNet_adjust_MSE
 
 
 def train_regression():
@@ -39,7 +39,14 @@ def train_regression():
         datetime_test_start=datetime_train_start,
         datetime_test_end=datetime_train_end
     )
-    net = UNet(
+    # net = UNet(
+    #     n_channels=n_channels,
+    #     n_classes=n_classes,
+    #     bilinear=bilinear,
+    #     learning_rate=learning_rate,
+    #     lr_patience=lr_patience
+    # )
+    net = UNet_adjust_MSE(
         n_channels=n_channels,
         n_classes=n_classes,
         bilinear=bilinear,

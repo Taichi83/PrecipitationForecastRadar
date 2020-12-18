@@ -36,6 +36,30 @@ class UNet(UNet_base):
         logits = self.outc(x)
         return logits
 
+# todo: datasetもいじる。
+class UNet_adjust_MSE(UNet):
+    def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True, learning_rate: float = 0.001,
+                 lr_patience: int = 5):
+        super().__init__(n_channels, n_classes, bilinear, learning_rate, lr_patience)
+
+    def adjust_mse(self, y_pred, y_true):
+        y_pred_flattened = y_pred.view(-1)
+        y_true_flattened = y_true.view(-1)
+        y_true_flattened_zero = sum(y_true_flattened==0)/y_true_flattened.shape[0]
+        y_ratio = torch.zeros_like(y_true_flattened)
+        y_ratio[y_true_flattened==0] = 1.0 - y_true_flattened_zero
+        y_ratio[y_true_flattened != 0] = 1.0 - y_true_flattened_zero
+        intersection = torch.sum((y_pred_flattened - y_true_flattened)**2 * y_ratio)
+
+        return intersection/y_true_flattened.shape[0]
+
+    # add
+    def loss_func(self, y_pred, y_true):
+        # reduction="mean" is average of every pixel, but I want average of image
+        # return nn.functional.mse_loss(y_pred, y_true, reduction="sum") / (y_true.size(-1) * y_true.size(-2))
+
+        return self.adjust_mse(y_pred, y_true)
+
 
 class UNet_Attention(UNet_base):
     def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True,
