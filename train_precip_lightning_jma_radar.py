@@ -23,7 +23,7 @@ def train_regression():
     datetime_train_end = datetime.datetime(year=2015, month=12, day=31, tzinfo=pytz.utc)
     datetime_test_start = datetime.datetime(year=2016, month=1, day=1, tzinfo=pytz.utc)
     datetime_test_end = datetime.datetime(year=2016, month=1, day=31, tzinfo=pytz.utc)
-    precipitation_threshold_train = 0.2
+    precipitation_threshold_train = None# 0.2
     precipitation_threshold_test = None
 
     n_channels = num_input_images
@@ -50,20 +50,20 @@ def train_regression():
         precipitation_threshold_test=precipitation_threshold_test,
 
     )
-    net = UNet(
-        n_channels=n_channels,
-        n_classes=n_classes,
-        bilinear=bilinear,
-        learning_rate=learning_rate,
-        lr_patience=lr_patience
-    )
-    # net = UNet_adjust_MSE(
+    # net = UNet(
     #     n_channels=n_channels,
     #     n_classes=n_classes,
     #     bilinear=bilinear,
     #     learning_rate=learning_rate,
     #     lr_patience=lr_patience
     # )
+    net = UNet_adjust_MSE(
+        n_channels=n_channels,
+        n_classes=n_classes,
+        bilinear=bilinear,
+        learning_rate=learning_rate,
+        lr_patience=lr_patience
+    )
 
     dm.setup()
     # return

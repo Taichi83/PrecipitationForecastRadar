@@ -1,6 +1,7 @@
 from PrecipitationForecastRadar.models.unet_parts import *
 from PrecipitationForecastRadar.models.regression_lightning_basemodel import UNet_base
-
+from PrecipitationForecastRadar.models.layers import CBAM
+from PrecipitationForecastRadar.models.unet_parts_depthwise_separable import DoubleConvDS, UpDS, DownDS
 
 class UNet(UNet_base):
     def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True,
@@ -36,7 +37,6 @@ class UNet(UNet_base):
         logits = self.outc(x)
         return logits
 
-# todo: datasetもいじる。
 class UNet_adjust_MSE(UNet):
     def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True, learning_rate: float = 0.001,
                  lr_patience: int = 5):
@@ -62,7 +62,7 @@ class UNet_adjust_MSE(UNet):
 
 
 class UNet_Attention(UNet_base):
-    def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True,
+    def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True, reduction_ratio: int = 16,
                  learning_rate: float = 0.001, lr_patience: int = 5):
         super().__init__(learning_rate, lr_patience)
         self.n_channels = n_channels
@@ -107,7 +107,7 @@ class UNet_Attention(UNet_base):
 
 
 class UNetDS(UNet_base):
-    def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True,
+    def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True, kernels_per_layer: int = 1,
                  learning_rate: float = 0.001, lr_patience: int = 5):
         super().__init__(learning_rate, lr_patience)
         self.n_channels = n_channels
@@ -143,7 +143,8 @@ class UNetDS(UNet_base):
 
 
 class UNetDS_Attention(UNet_base):
-    def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True,
+    def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True, reduction_ratio: int = 16,
+                 kernels_per_layer: int = 1,
                  learning_rate: float = 0.001, lr_patience: int = 5):
         super().__init__(learning_rate, lr_patience)
         self.n_channels = n_channels
@@ -188,7 +189,8 @@ class UNetDS_Attention(UNet_base):
 
 
 class UNetDS_Attention_4CBAMs(UNet_base):
-    def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True,
+    def __init__(self, n_channels: int = 12, n_classes: int = 1, bilinear: bool = True, reduction_ratio: int = 16,
+                 kernels_per_layer: int = 1,
                  learning_rate: float = 0.001, lr_patience: int = 5):
         super().__init__(learning_rate, lr_patience)
         self.n_channels = n_channels
